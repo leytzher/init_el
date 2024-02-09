@@ -1,0 +1,148 @@
+
+(setq inhibit-startup-message t)
+(setq initial-scratch-message nil)
+
+;; setup relative numbers
+(global-display-line-numbers-mode)
+(setq display-line-numbers-type 'relative)
+
+;; display battery for when in full screen mode
+(display-battery-mode t)
+
+
+(require 'package)
+(add-to-list 'package-archives
+	     '("melpa" . "https://melpa.org/packages/"))
+(add-to-list 'package-archives
+	     '("gnu" . "https://elpa.gnu.org/packages/"))
+(package-initialize)
+
+;; configure use-package
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(eval-and-compile
+  (setq use-package-always-ensure t
+	use-package-expand-minimally t))
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(magit diredc org-download evil-org org-superstar org-bullets helm org-roam-ui sly org-roam lsp-mode projectile rainbow-blocks paredit ir-black-theme evil)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+
+(require 'evil)
+(evil-mode 1)
+
+(load-theme 'ir-black t)
+
+(require 'rainbow-blocks)
+
+
+(setq inferior-lisp-program "sbcl --dynamic-space-size 4096")
+
+
+(add-hook 'after-init-hook 'global-company-mode)
+
+;; company
+(company-mode +1)
+
+;; prjectile)
+(projectile-mode +1)
+
+;; paredit
+(autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
+(add-hook 'emacs-lisp-mode-hook #'enable-paredit-mode)
+(add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
+(add-hook 'lisp-mode-hook #'enable-paredit-mode)
+(add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
+
+(add-hook 'lisp-mode-hook 'rainbow-blocks-mode)
+
+(global-set-key (kbd "C-M-.") 'sly-edit-definition)
+(global-set-key (kbd "C-M-,") 'sly-pop-find-definition-stack)
+
+;; helm
+;;; start helm
+(helm-mode 1)
+;;; bind helm-M-x to M-x
+(global-set-key (kbd "M-x") 'helm-M-x)
+
+;; setup org-mode
+;;;;;;;
+(setq org-startup-folded t)
+(setq org-startup-indented t)
+(setq org-startup-with-inline-images t)
+;;; setup org-superstar
+(use-package org-superstar
+  :ensure t
+  :config
+  (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
+;;; setup evil org
+(use-package evil-org
+  :ensure t
+  :after (evil org)
+  :config
+  (add-hook 'org-mode-hook 'evil-org-mode)
+  (add-hook 'evil-org-mode-hook
+	    (lambda ()
+	      (evil-org-set-key-theme '(navigation insert textobjects additional calendar)))))
+
+;;; setup org-roam
+(use-package org-roam
+  :ensure t
+  :custom
+  (org-roam-directory (file-truename "/Users/leytzher/Library/Mobile Documents/iCloud~com~logseq~logseq/Documents/SecondBrain/pages/"))
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+	 ("C-c n f" . org-roam-node-find)
+	 ("C-c n g" . org-roam-graph)
+	 ("C-c n i" . org-roam-node-insert)
+	 ("C-c n I" . org-roam-node-insert-immediate)
+	 ("C-c n c" . org-roam-capture)
+	 ;; dailies
+	 ("C-c n j" . org-roam-dailies-capture-today))
+  :config
+  (setq org-roam-node-display-template
+	(concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+  (org-roam-db-autosync-mode)
+  (require 'org-roam-protocol))
+
+(defun org-roam-node-insert-immediate (arg &rest args)
+  (interactive "P")
+  (let ((args (cons arg args))
+	(org-roam-capture-templates (list (append (car org-roam-capture-templates) '(:immediate-finish t)))))
+    (apply #'org-roam-node-insert args)))
+
+
+(require 'org-download)
+(add-hook 'dired-mode-hook 'org-download-enable) 
+
+(use-package org-roam-ui
+  :after org-roam
+  :config
+  (setq org-roam-ui-sync-theme t
+	org-roam-ui-follow t
+	org-roam-ui-update-on-save t
+	org-roam-ui-open-on-start t))
+
+(add-hook 'text-mode-hook 'visual-line-mode)
+(add-hook 'org-mode-hook 'visual-line-mode)
+
+
+
+
+
+
+
+
+ 
