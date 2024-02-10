@@ -32,7 +32,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(magit diredc org-download evil-org org-superstar org-bullets helm org-roam-ui sly org-roam lsp-mode projectile rainbow-blocks paredit ir-black-theme evil)))
+   '(marginalia vertico magit diredc org-download evil-org org-superstar org-bullets helm org-roam-ui sly org-roam lsp-mode projectile rainbow-blocks paredit ir-black-theme evil)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -80,7 +80,7 @@
 
 ;; setup org-mode
 ;;;;;;;
-(setq org-startup-folded t)
+(setq org-startup-folded nil)
 (setq org-startup-indented t)
 (setq org-startup-with-inline-images t)
 ;;; setup org-superstar
@@ -102,7 +102,17 @@
 (use-package org-roam
   :ensure t
   :custom
-  (org-roam-directory (file-truename "/Users/leytzher/Library/Mobile Documents/iCloud~com~logseq~logseq/Documents/SecondBrain/pages/"))
+  (org-roam-directory (file-truename "/Users/leytzher/Library/Mobile Documents/iCloud~com~logseq~logseq/Documents/SecondBrain/"))
+  (org-roam-dailies-directory  "journals/")
+  (org-roam-completion-everywhere t)
+  (org-roam-capture-templates
+   '(;; add templates, always keep the default.
+     ("d" "default" plain
+      "%?"
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+      :unnarrowed t)
+
+     ))
   :bind (("C-c n l" . org-roam-buffer-toggle)
 	 ("C-c n f" . org-roam-node-find)
 	 ("C-c n g" . org-roam-graph)
@@ -110,7 +120,9 @@
 	 ("C-c n I" . org-roam-node-insert-immediate)
 	 ("C-c n c" . org-roam-capture)
 	 ;; dailies
-	 ("C-c n j" . org-roam-dailies-capture-today))
+	 ("C-c n j" . org-roam-dailies-capture-today)
+	 :map org-mode-map
+	 ("C-M-i" . completion-at-point))
   :config
   (setq org-roam-node-display-template
 	(concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
@@ -139,7 +151,43 @@
 (add-hook 'org-mode-hook 'visual-line-mode)
 
 
+;; setup babel to code within org-mode
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((R . t)
+   (emacs-lisp . t)
+   (shell . t)
+   (gnuplot .t)
+   (lisp . t)
+   (python . t)
+   (sql . t)))
 
+;; setup vertico
+(use-package vertico
+  :ensure t
+  :bind (:map vertico-map
+	      ("C-j" . vertico-next)
+	      ("C-k" . vertico-previous)
+	      ("C-f" . vertico-exit)
+	      :map minibuffer-local-map
+	      ("M-h" . backward-kill-word))
+  :custom
+  (vertico--cycle t)
+  :init
+  (vertico-mode))
+
+
+(use-package savehist
+  :init
+  (savehist-mode))
+
+(use-package marginalia
+  :after vertico
+  :ensure t
+  :custom
+  (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil ))
+  :init
+  (marginalia-mode))
 
 
 
