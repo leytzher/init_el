@@ -2,6 +2,17 @@
 (setq inhibit-startup-message t)
 (setq initial-scratch-message nil)
 
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:family "CaskaydiaCove Nerd Font" :foundry "nil" :slant normal :weight regular :height 160 :width normal)))))
+
+;; transparency
+(set-frame-parameter nil 'alpha-background 75) ; For current frame
+(add-to-list 'default-frame-alist '(alpha-background . 75)) ; For all new frames henceforth
+
 ;; setup relative numbers
 (global-display-line-numbers-mode)
 (setq display-line-numbers-type 'relative)
@@ -9,6 +20,7 @@
 ;; display battery for when in full screen mode
 (display-battery-mode t)
 
+(global-hl-line-mode 1)
 
 (require 'package)
 (add-to-list 'package-archives
@@ -31,14 +43,11 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(display-battery-mode t)
+ '(display-line-numbers-type 'relative)
+ '(global-display-line-numbers-mode t)
  '(package-selected-packages
    '(marginalia vertico magit diredc org-download evil-org org-superstar org-bullets helm org-roam-ui sly org-roam lsp-mode projectile rainbow-blocks paredit ir-black-theme evil)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
 
 
 (require 'evil)
@@ -189,8 +198,3 @@
   :init
   (marginalia-mode))
 
-
-
-
-
- 
