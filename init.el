@@ -198,3 +198,56 @@
   :init
   (marginalia-mode))
 
+(use-package general
+  :ensure t
+  :config
+  (general-create-definer my-lisp-leader-def
+    :states '(normal visual emacs)
+    :keymaps 'lisp-mode-map
+    :prefix "SPC m")
+
+  (my-lisp-leader-def
+    ;; Help
+    "ha" '(slime-apropos :which-key "SLIME apropos")
+    "hd" '(slime-disassemble-symbol :which-key "Disassemble symbol at point")
+    "hh" '(slime-describe-symbol :which-key "Describe symbol at point")
+    "hi" '(slime-inspect-definition :which-key "Inspect definition")
+    "hH" '(slime-hyperspec-lookup :which-key "Hyperspec lookup symbol at point")
+    "hp" '(slime-apropos-package :which-key "Browse apropos results for package")
+    "ht" '(slime-toggle-trace-fdefinition :which-key "Toggle tracing of function")
+    "hT" '(slime-untrace-all :which-key "Untrace all functions")
+    "h<" '(slime-who-calls :which-key "Show all known callers")
+    "h>" '(slime-who-references :which-key "Show all known callees")
+    "hm" '(slime-who-macroexpands :which-key "Show all usages of a macro")
+    "hr" '(slime-who-binds :which-key "Show references to global variable")
+    "hs" '(slime-who-specializes :which-key "Show methods specialized on class")
+
+    ;; Evaluation
+    "eb" '(slime-eval-buffer :which-key "Evaluate buffer")
+    "ee" '(slime-eval-last-expression :which-key "Evaluate last expression")
+    "ef" '(slime-eval-defun :which-key "Evaluate top level s-expression")
+    "eF" '(slime-undefine-function :which-key "Undefine function at point")
+    "er" '(slime-eval-region :which-key "Evaluate region")
+
+    ;; REPL
+    "si" '(slime :which-key "Start inferior process")
+    "se" '(slime-eval-last-expression-in-repl :which-key "Eval last expr in REPL")
+    "sq" '(slime-quit-lisp :which-key "Quit REPL")
+
+    ;; Compile
+    "cc" '(slime-compile-file :which-key "Compile file")
+    "cC" '(slime-compile-and-load-file :which-key "Compile and load file")
+    "cl" '(slime-load-file :which-key "Load file")
+    "cn" '(slime-remove-notes :which-key "Remove compilation notes")
+    "cf" '(slime-compile-defun :which-key "Compile function")
+    "cr" '(slime-compile-region :which-key "Compile region")
+
+    ;; Navigation
+    "gg" '(slime-edit-definition :which-key "Go to definition")
+    "gb" '(slime-pop-find-definition-stack :which-key "Go back")
+    "gn" '(slime-next-note :which-key "Next note")
+    "gp" '(slime-previous-note :which-key "Previous note")
+
+    ;; Macroexpansion
+    "ma" '(slime-macroexpand-all :which-key "Macroexpand completely")
+    "mo" '(slime-macroexpand-1 :which-key "Macroexpand once")))
